@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".Canvas">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/decreaseTeam1"
+            android:background="@drawable/button_background"
+            android:src="@drawable/ic_exposure_neg_1_black_24dp"
+            android:contentDescription="minus Button"
+            android:onClick="decreaseScore"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/score_1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="0"/>
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/button_background"
+            android:id="@+id/increaseTeam1"
+            android:onClick="increaseScore"
+            android:src="@drawable/ic_exposure_plus_1_black_24dp"
+            android:contentDescription="plus one"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/decreaseTeam2"
+            android:background="@drawable/button_background"
+            android:onClick="decreaseScore"
+            android:src="@drawable/ic_exposure_neg_1_black_24dp"
+            android:contentDescription="minus Button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/score_2"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="0"/>
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/increaseTeam2"
+            android:background="@drawable/button_background"
+            android:onClick="increaseScore"
+            android:src="@drawable/ic_exposure_plus_1_black_24dp"
+            android:contentDescription="plus one"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

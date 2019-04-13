@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">notificationTest</string>
+
+    <string name="title_activity_canvas">Canvas</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="day_mode">Day Mode</string>
+</resources>
