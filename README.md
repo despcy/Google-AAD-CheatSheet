@@ -2,6 +2,54 @@
 
 考纲：https://developers.google.com/training/certification/associate-android-developer/study-guide/
 
+# Table of Contents:
+
+- [Google-AAD](#google-aad)
+	- [Android Core:](#android-core)
+		- [Understand the architecture of the Android system](#understand-the-architecture-of-the-android-system)
+			- [Android Basics](#android-basics)
+			- [Four app components:](#four-app-components)
+		- [Be able to describe the basic building blocks of an Android app](#be-able-to-describe-the-basic-building-blocks-of-an-android-app)
+		- [Know how to build and run an Android app](#know-how-to-build-and-run-an-android-app)
+		- [Display simple messages in a popup using a Toast or a Snackbar](#display-simple-messages-in-a-popup-using-a-toast-or-a-snackbar)
+			- [Toast:](#toast)
+			- [Snackbar:](#snackbar)
+		- [Be able to display a message outside your app's UI using Notifications](#be-able-to-display-a-message-outside-your-apps-ui-using-notifications)
+			- [Create Channel:](#create-channel)
+			- [Builder:](#builder)
+			- [Show:](#show)
+		- [Understand how to localize an app](#understand-how-to-localize-an-app)
+			- [Doc](#doc)
+			- [Codelab](#codelab)
+		- [Be able to schedule a background task using JobScheduler](#be-able-to-schedule-a-background-task-using-jobscheduler)
+			- [CodeLab](#codelab-1)
+	- [User interface:](#user-interface)
+		- [Understand the Android activity lifecycle](#understand-the-android-activity-lifecycle)
+		- [Be able to create an Activity that displays a Layout](#be-able-to-create-an-activity-that-displays-a-layout)
+		- [Be able to construct a UI with ConstraintLayout](#be-able-to-construct-a-ui-with-constraintlayout)
+		- [Understand how to create a custom View class and add it to a Layout](#understand-how-to-create-a-custom-view-class-and-add-it-to-a-layout)
+		- [Know how to implement a custom app theme](#know-how-to-implement-a-custom-app-theme)
+		- [Be able to add accessibility hooks to a custom View](#be-able-to-add-accessibility-hooks-to-a-custom-view)
+		- [Know how to apply content descriptions to views for accessibility](#know-how-to-apply-content-descriptions-to-views-for-accessibility)
+		- [Understand how to display items in a RecyclerView](#understand-how-to-display-items-in-a-recyclerview)
+		- [Be able to bind local data to a RecyclerView list using the Paging library](#be-able-to-bind-local-data-to-a-recyclerview-list-using-the-paging-library)
+		- [Know how to implement menu-based navigation](#know-how-to-implement-menu-based-navigation)
+		- [Understand how to implement drawer navigation](#understand-how-to-implement-drawer-navigation)
+	- [DataManagement:](#datamanagement)
+		- [Understand how to define data using Room entities](#understand-how-to-define-data-using-room-entities)
+		- [Be able to access Room database with data access object (DAO)](#be-able-to-access-room-database-with-data-access-object-dao)
+		- [Know how to observe and respond to changing data using LiveData](#know-how-to-observe-and-respond-to-changing-data-using-livedata)
+		- [Understand how to use a Repository to mediate data operations](#understand-how-to-use-a-repository-to-mediate-data-operations)
+		- [Be able to read and parse raw resources or asset files](#be-able-to-read-and-parse-raw-resources-or-asset-files)
+		- [Be able to create persistent Preference data from user input](#be-able-to-create-persistent-preference-data-from-user-input)
+		- [Understand how to change the behavior of the app based on user preferences](#understand-how-to-change-the-behavior-of-the-app-based-on-user-preferences)
+	- [Debugging:](#debugging)
+	- [Testing：](#testing)
+		- [Espresso:](#espresso)
+		- [UI Automator:](#ui-automator)
+		- [JUnit:](#junit)
+
+
 ## Android Core:
 
 ### Understand the architecture of the Android system
