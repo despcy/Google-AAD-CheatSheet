@@ -838,4 +838,306 @@ public class MainActivity extends AppCompatActivity {
 
 ## DataManagement:
 
- 
+[AppArchitecture](https://developer.android.com/jetpack/docs/guide)
+
+![](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
+
+### Understand how to define data using Room entities
+
+```java
+@Entity(tableName = "word_table")
+public class Word {
+
+   @PrimaryKey
+   @NonNull
+   @ColumnInfo(name = "word")
+   private String mWord;
+
+   public Word(@NonNull String word) {this.mWord = word;}
+
+   public String getWord(){return this.mWord;}
+}
+```
+
+### Be able to access Room database with data access object (DAO)
+
+Database:
+```java
+@Database(entities = {Word.class}, version = 1, exportSchema = false)
+public abstract class WordRoomDatabase extends RoomDatabase {
+
+   public abstract WordDao wordDao();
+   private static WordRoomDatabase INSTANCE;
+
+   static WordRoomDatabase getDatabase(final Context context) {
+       if (INSTANCE == null) {
+           synchronized (WordRoomDatabase.class) {
+               if (INSTANCE == null) {
+                   INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                           WordRoomDatabase.class, "word_database")
+                             // Wipes and rebuilds instead of migrating
+                             // if no Migration object.
+                            // Migration is not part of this practical.
+                           .fallbackToDestructiveMigration()
+                           .build();                
+               }
+           }
+       }
+       return INSTANCE;
+   }
+}
+```
+
+Dao:
+```java
+@Dao
+public interface WordDao {
+
+   @Insert
+   void insert(Word word);
+
+   @Query("DELETE FROM word_table")
+   void deleteAll();
+
+   @Query("SELECT * from word_table ORDER BY word ASC")
+   List<Word> getAllWords();
+}
+```
+
+### [Know how to observe and respond to changing data using LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
+
+### Understand how to use a Repository to mediate data operations
+
+```java
+public class WordRepository {
+
+   private WordDao mWordDao;
+   private LiveData<List<Word>> mAllWords;
+
+   WordRepository(Application application) {
+       WordRoomDatabase db = WordRoomDatabase.getDatabase(application);
+       mWordDao = db.wordDao();
+       mAllWords = mWordDao.getAllWords();
+   }
+
+   LiveData<List<Word>> getAllWords() {
+       return mAllWords;
+   }
+
+   public void insert (Word word) {
+       new insertAsyncTask(mWordDao).execute(word);
+   }
+
+   private static class insertAsyncTask extends AsyncTask<Word, Void, Void> {
+
+       private WordDao mAsyncTaskDao;
+
+       insertAsyncTask(WordDao dao) {
+           mAsyncTaskDao = dao;
+       }
+
+       @Override
+       protected Void doInBackground(final Word... params) {
+           mAsyncTaskDao.insert(params[0]);
+           return null;
+       }
+   }
+}
+```
+
+### [Be able to read and parse raw resources or asset files](https://www.google.com)
+
+### Be able to create persistent Preference data from user input
+
+```java
+public class MainActivity extends AppCompatActivity {
+  // Key for current count
+    private final String COUNT_KEY = "count";
+    // Key for current color
+    private final String COLOR_KEY = "color";
+    // Shared preferences object
+    private SharedPreferences mPreferences;
+
+    // Name of shared preferences file
+    private String sharedPrefFile =
+            "com.example.android.hellosharedprefs";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        // Restore preferences
+        mCount = mPreferences.getInt(COUNT_KEY, 0);
+        mShowCountTextView.setText(String.format("%s", mCount));
+        mColor = mPreferences.getInt(COLOR_KEY, mColor);
+        mShowCountTextView.setBackgroundColor(mColor);
+    }
+
+    public void reset(View view) {
+        // Clear preferences
+        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+        preferencesEditor.clear();
+        preferencesEditor.apply();
+    }
+
+    /**
+     * Callback for activity pause.  Shared preferences are saved here.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+        preferencesEditor.putInt(COUNT_KEY, mCount);
+        preferencesEditor.putInt(COLOR_KEY, mColor);
+        preferencesEditor.apply();
+    }
+}
+```
+
+### Understand how to change the behavior of the app based on user preferences
+
+AppSettings:
+
+styles.xml
+
+```xml
+<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+```
+
+preference.xml:
+```xml
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the
+    dialog to dismiss it. -->
+    <android.support.v7.preference.SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="@string/switch_summary"
+        android:title="@string/switch_title" />
+    <!-- NOTE: ListPreference's summary should be set to its value by the
+    activity code. -->
+    <ListPreference
+        android:defaultValue="US"
+        android:entries="@array/pref_market_titles"
+        android:entryValues="@array/pref_market_values"
+        android:key="sync_frequency"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_account" />
+
+    <!-- This preference simply launches an intent when selected. Use this UI
+    sparingly, per design guidelines. -->
+    <Preference android:title="@string/pref_title_account_settings">
+        <intent android:action="android.settings.SYNC_SETTINGS" />
+    </Preference>
+
+</PreferenceScreen>
+```
+View:
+```java
+public class SettingFragment extends PreferenceFragmentCompat {
+    public SettingFragment() {
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.setting_preference,rootKey);
+    }
+}
+
+```
+
+getPreference:
+
+```java
+public static final String
+            KEY_PREF_EXAMPLE_SWITCH = "example_switch";
+SharedPreferences sharedPref =   
+           android.support.v7.preference.PreferenceManager
+                      .getDefaultSharedPreferences(this);
+Boolean switchPref = sharedPref.getBoolean
+           (SettingsActivity.KEY_PREF_EXAMPLE_SWITCH, false);
+```
+
+## Debugging:
+
+略
+
+## [Testing](https://developer.android.com/training/testing/fundamentals)：
+
+![](https://developer.android.com/images/training/testing/testing-workflow.png)
+
+![](https://developer.android.com/images/training/testing/pyramid_2x.png)
+
+
+
+### [Espresso](https://developer.android.com/training/testing/espresso):
+
+![](https://developer.android.com/images/training/testing/espresso-cheatsheet.png)
+
+Gradle:
+```
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "com.my.awesome.app"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    androidTestImplementation 'androidx.test:runner:1.1.0
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+}
+```
+
+* [Basic Test](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/BasicSample/app/src/androidTest/java/com/example/android/testing/espresso/BasicSample/ChangeTextBehaviorTest.java)
+
+* [Custom matcher](https://github.com/googlesamples/android-testing/tree/master/ui/espresso/CustomMatcherSample/app/src/androidTest/java/com/example/android/testing/espresso/CustomMatcherSample)
+
+* [Data Adapter](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/DataAdapterSample/app/src/androidTest/java/com/example/android/testing/espresso/DataAdapterSample/LongListActivityTest.java)
+
+* [Idleing Resource](https://github.com/googlesamples/android-testing/tree/master/ui/espresso/IdlingResourceSample/app/src)
+
+* [Intents Basic](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/IntentsBasicSample/app/src/androidTest/java/com/example/android/testing/espresso/BasicSample/DialerActivityTest.java)
+
+* [Intents Advance](https://github.com/googlesamples/android-testing/tree/master/ui/espresso/IntentsAdvancedSample/app/src/androidTest/java/com/example/android/testing/espresso/intents/AdvancedSample)
+
+* [Multi Process](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/MultiProcessSample/app/src/androidTest/java/com/example/android/testing/espresso/multiprocesssample/ExampleInstrumentedTest.java)
+
+* [Multi Window](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/MultiWindowSample/app/src/androidTest/java/com/example/android/testing/espresso/MultiWindowSample/MultiWindowTest.java)
+
+* [RecyclerView](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/RecyclerViewSample/app/src/androidTest/java/com/example/android/testing/espresso/RecyclerViewSample/RecyclerViewSampleTest.java)
+
+* [Web Basic](https://github.com/googlesamples/android-testing/blob/master/ui/espresso/WebBasicSample/app/src/androidTest/java/com/example/android/testing/espresso/web/BasicSample/WebViewActivityTest.java)
+
+### UI Automator:
+
+https://github.com/googlesamples/android-testing/tree/master/ui/uiautomator/BasicSample
+
+### JUnit:
+
+CheatSheet: https://www.roguewave.com/sites/rw/files/resources/junit-cheat-sheet_0.pdf
+
+mockito: https://www.jianshu.com/p/a3b59fad17e6
+
+* [Basic](https://github.com/googlesamples/android-testing/tree/master/unit/BasicSample/app/src/test/java/com/example/android/testing/unittesting/BasicSample)
+
+* [Service](https://github.com/googlesamples/android-testing/blob/master/integration/ServiceTestRuleSample/app/src/androidTest/java/com/example/android/testing/ServiceTestRuleSample/LocalServiceTest.java)
+
+
+
+
+
+
+
