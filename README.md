@@ -668,7 +668,15 @@ public class ConcertActivity extends AppCompatActivity {
                 ViewModelProviders.of(this).get(ConcertViewModel.class);
         RecyclerView recyclerView = findViewById(R.id.concert_list);
         ConcertAdapter adapter = new ConcertAdapter();
-        viewModel.concertList.observe(this, adapter::submitList);
+        viewModel.concertList.observe(this, 
+ new Observer<PagedList<FavSong>>() {
+            @Override
+            public void onChanged(PagedList<FavSong> favSongs) {
+
+                    adapter.submitList(favSongs);
+
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 }
